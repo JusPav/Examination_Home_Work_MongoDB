@@ -25,7 +25,6 @@ public class MongoCRUD {
         studentCollection = database.getCollection("students", Student.class);
         examCollection = database.getCollection("exams", ExamQuestionDB.class);
     }
-
     public void startMongoCRUD() {
         MongoCRUD mongoCRUD = new MongoCRUD();
 
@@ -38,7 +37,6 @@ public class MongoCRUD {
             mongoCRUD.userAction(action);
         } while (!action.equals("4"));
     }
-
     private void userAction(String action) {
 
         switch (action) {
@@ -49,7 +47,6 @@ public class MongoCRUD {
             default -> System.out.println("There is no such choice");
         }
     }
-
     public static void menu() {
         System.out.println(""" 
                 1 - Edit exam answer
@@ -57,7 +54,6 @@ public class MongoCRUD {
                 3 - Get student with min rating
                 4 - Return to main menu """);
     }
-
     public void editExam() {
         FindIterable<ExamQuestionDB> exam = examCollection.find();
         for (ExamQuestionDB ex : exam) {
@@ -77,7 +73,6 @@ public class MongoCRUD {
         String newAnswer = sc.next().toUpperCase();
         examCollection.updateOne(Filters.and(Filters.eq("exam.examId", examID), Filters.eq("examAnswers.questionNumb", questionNumber)), Updates.set("examAnswers.$.correctAnswers", newAnswer));
     }
-
     public void maxRating() {
         List<Document> pipeline = Arrays.asList(
                 new Document("$project", new Document("name", 1).append("surname", 1)
@@ -90,7 +85,6 @@ public class MongoCRUD {
             System.out.printf("Student who have the highest rating: %s %s%n", rating.getName(), rating.getSurname());
         }
     }
-
     public void minRating() {
         List<Document> pipeline = Arrays.asList(
                 new Document("$project", new Document("name", 1).append("surname", 1)
