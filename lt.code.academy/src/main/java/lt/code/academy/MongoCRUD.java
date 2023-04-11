@@ -1,6 +1,5 @@
 package lt.code.academy;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -17,7 +16,6 @@ public class MongoCRUD {
     private final MongoCollection<ExamQuestionDB> examCollection;
     Scanner sc = new Scanner(System.in);
     int examID;
-
 
     public MongoCRUD() {
 
@@ -47,7 +45,7 @@ public class MongoCRUD {
             case "1" -> editExam();
             case "2" -> maxRating();
             case "3" -> minRating();
-            case "4" -> System.out.println("Program is finished");
+            case "4" -> System.out.println("Returning to main menu");
             default -> System.out.println("There is no such choice");
         }
     }
@@ -106,3 +104,4 @@ public class MongoCRUD {
         }
     }
 }
+
