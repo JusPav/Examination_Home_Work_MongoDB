@@ -1,15 +1,15 @@
 package lt.code.academy;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import lt.code.academy.exam.ExamQuestionDB;
 import lt.code.academy.student.Student;
+import org.bson.Document;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class MongoCRUD {
@@ -27,6 +27,7 @@ public class MongoCRUD {
         studentCollection = database.getCollection("students", Student.class);
         examCollection = database.getCollection("exams", ExamQuestionDB.class);
     }
+
     public void startMongoCRUD() {
         MongoCRUD mongoCRUD = new MongoCRUD();
 
@@ -78,12 +79,30 @@ public class MongoCRUD {
         String newAnswer = sc.next().toUpperCase();
         examCollection.updateOne(Filters.and(Filters.eq("exam.examId", examID), Filters.eq("examAnswers.questionNumb", questionNumber)), Updates.set("examAnswers.$.correctAnswers", newAnswer));
     }
+
     public void maxRating() {
-        Student document = studentCollection.find().sort(new BasicDBObject("studentRate", -1)).limit(1).first();
-        System.out.println("Student with highest rating score: " + document.getName() + " " + document.getSurname());
+        List<Document> pipeline = Arrays.asList(
+                new Document("$project", new Document("name", 1).append("surname", 1)
+                        .append("maxStudentRate", new Document("$max", Arrays.asList("$PHP.studentRate", "$Java.studentRate", "$Python.studentRate")))),
+                new Document("$sort", new Document("maxStudentRate", -1)),
+                new Document("$limit", 1));
+
+        AggregateIterable<Student> output = studentCollection.aggregate(pipeline);
+        for (Student rating : output) {
+            System.out.printf("Student who have the highest rating: %s %s%n", rating.getName(), rating.getSurname());
+        }
     }
+
     public void minRating() {
-        Student document = studentCollection.find().sort(new BasicDBObject("studentRate", 1)).limit(1).first();
-        System.out.println("Student with lowest rating score: " + document.getName() + " " + document.getSurname());
+        List<Document> pipeline = Arrays.asList(
+                new Document("$project", new Document("name", 1).append("surname", 1)
+                        .append("maxStudentRate", new Document("$max", Arrays.asList("$PHP.studentRate", "$Java.studentRate", "$Python.studentRate")))),
+                new Document("$sort", new Document("maxStudentRate", 1)),
+                new Document("$limit", 1));
+
+        AggregateIterable<Student> output = studentCollection.aggregate(pipeline);
+        for (Student rating : output) {
+            System.out.printf("Student who have the lowest rating: %s %s%n", rating.getName(), rating.getSurname());
+        }
     }
 }
