@@ -76,7 +76,7 @@ public class MongoCRUD {
     public void maxRating() {
         List<Document> pipeline = Arrays.asList(
                 new Document("$project", new Document("name", 1).append("surname", 1)
-                        .append("maxStudentRate", new Document("$max", Arrays.asList("$PHP.studentRate", "$Java.studentRate", "$Python.studentRate")))),
+                        .append("maxStudentRate", new Document("$max", Arrays.asList("$PHP.studentRate", "$Java.studentRate", "$Python.studentRate", "$Rust.studentRate")))),
                 new Document("$sort", new Document("maxStudentRate", -1)),
                 new Document("$limit", 1));
 
@@ -88,7 +88,7 @@ public class MongoCRUD {
     public void minRating() {
         List<Document> pipeline = Arrays.asList(
                 new Document("$project", new Document("name", 1).append("surname", 1)
-                        .append("maxStudentRate", new Document("$max", Arrays.asList("$PHP.studentRate", "$Java.studentRate", "$Python.studentRate")))),
+                        .append("maxStudentRate", new Document("$max", Arrays.asList("$PHP.studentRate", "$Java.studentRate", "$Python.studentRate", "$Rust.studentRate")))),
                 new Document("$sort", new Document("maxStudentRate", 1)),
                 new Document("$limit", 1));
 
